@@ -49,6 +49,11 @@ spec:
           env:
             - name: "SUPERSET_PORT"
               value: {{ .Values.service.port | quote}}
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "superset.fullname" . }}-postgresql.credentials
+                  key: password
           {{ if .Values.extraEnv }}
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key | quote}}

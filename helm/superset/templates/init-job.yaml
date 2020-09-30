@@ -33,8 +33,13 @@ spec:
       containers:
       - name: {{ template "superset.name" . }}-init-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        {{ if .Values.extraEnv }}
         env:
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "superset.fullname" . }}-postgresql.credentials
+                key: password
+          {{ if .Values.extraEnv }}
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key | quote }}
             value: {{ $value | quote }}

@@ -1,0 +1,56 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: '{{ template "superset.fullname" . }}-postgresql'
+
+spec:
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        chart: {{ .Chart.Name }}
+        app: "{{.Release.Name}}-postgresql"
+        app.kubernetes.io/name: postgresql
+        app.kubernetes.io/instance: "{{.Release.Name}}-postgresql"
+        app.kubernetes.io/version: 1.0
+        app.kubernetes.io/tier: backend
+        app.kubernetes.io/part-of: valuead
+        app.kubernetes.io/managed-by: git
+
+  teamId: '{{ template "superset.fullname" . }}'
+  volume:
+    size: 20Gi
+  patroni:
+    pg_hba:
+    - host    all all all md5
+
+  enableLogicalBackup: true
+  numberOfInstances: 1
+  users:
+    # database owner
+    '{{ template "superset.fullname" . }}':
+    - superuser
+    - createdb
+    # role for application foo
+    #foo: # or 'foo_user: []'
+  #databases: name->owner
+  #databases:
+  #  "{{.Release.Name}}_{{ $.Values.ingress.environment }}_lms" : "{{.Release.Name}}_{{ $.Values.ingress.environment }}"
+  databases:
+   '{{ template "superset.fullname" . }}-postgresql' : '{{ template "superset.fullname" . }}'
+  preparedDatabases:
+   '{{ template "superset.fullname" . }}-postgresql'
+  postgresql:
+    version: "10"
+    parameters:
+      max_replication_slots: "1"
+      max_wal_senders: "1"
+      synchronous_commit: "on"
+      wal_level: logical
+  # resources:
+  #   limits:
+  #     cpu: "{{ $.Values.db.resources.limits.cpu }}"
+  #     memory: {{ $.Values.db.resources.limits.memory }}
+  #   requests:
+  #     cpu: "{{ $.Values.db.resources.requests.cpu }}"
+  #     memory: {{ $.Values.db.resources.requests.memory }}
