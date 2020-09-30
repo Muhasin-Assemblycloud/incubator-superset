@@ -2,28 +2,21 @@ apiVersion: "acid.zalan.do/v1"
 kind: postgresql
 metadata:
   name: '{{ template "superset.fullname" . }}-postgresql'
-
 spec:
   template:
     metadata:
       creationTimestamp: null
       labels:
-        chart: {{ .Chart.Name }}
-        app: "{{.Release.Name}}-postgresql"
-        app.kubernetes.io/name: postgresql
-        app.kubernetes.io/instance: "{{.Release.Name}}-postgresql"
-        app.kubernetes.io/version: 1.0
-        app.kubernetes.io/tier: backend
-        app.kubernetes.io/part-of: valuead
-        app.kubernetes.io/managed-by: git
-
+        app: {{ template "superset.name" . }}
+        chart: {{ template "superset.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
   teamId: '{{ template "superset.fullname" . }}'
   volume:
     size: 20Gi
   patroni:
     pg_hba:
     - host    all all all md5
-
   enableLogicalBackup: true
   numberOfInstances: 1
   users:
