@@ -57,9 +57,9 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /superset
+  path: /
   hosts:
-    - client-uat.test.value-ad.com
+    - client-uat.test.value-ad.com/superset
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
