@@ -53,13 +53,13 @@ service:
   port: 8088
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
+  path: /superset
   hosts:
-    - chart-example.local
+    - client-uat.test.value-ad.com
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -109,7 +109,7 @@ init:
     - "-c"
     - ". {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh"
   enabled: true
-  loadExamples: false
+  loadExamples: true
   initContainers:
     - name: wait-for-postgres
       image: busybox:latest
